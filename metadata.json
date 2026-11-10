@@ -1,0 +1,8 @@
+{
+  "name": "Nishi Secret QR Campaign - 3 Kata Spesial",
+  "description": "Interactive landing page and secret treat flow for Nishi: share 3 words to unlock special voucher and free gelato reward.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

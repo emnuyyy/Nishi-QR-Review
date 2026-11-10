@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --color-nishi-maroon: #7B1B29;
+  --color-nishi-dark: #58101B;
+  --color-nishi-light: #9E2A3B;
+  --color-nishi-cream: #FDF8F2;
+  --color-nishi-card: #F5ECE0;
+  --color-nishi-gold: #F59E0B;
+  --font-display: 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Background Kawaii Dots Pattern */
+.bg-kawaii-pattern {
+  background-color: #FDF8F2;
+  background-image: radial-gradient(#7B1B29 0.75px, transparent 0.75px), radial-gradient(#7B1B29 0.75px, #FDF8F2 0.75px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+.pattern-overlay {
+  background: linear-gradient(180deg, rgba(253,248,242,0.88) 0%, rgba(253,248,242,0.96) 40%, rgba(253,248,242,0.98) 100%);
+}
+
+/* Custom Keyframe Animations */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(1deg); }
+}
+.animate-float {
+  animation: floatSlow 3.2s ease-in-out infinite;
+}
+
+@keyframes popBounce {
+  0% { transform: scale(0.85); opacity: 0; }
+  70% { transform: scale(1.03); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop {
+  animation: popBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes shakeAnim {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: shakeAnim 0.4s ease-in-out;
+}
+
+/* 3D Button Press Effect */
+.btn-3d {
+  box-shadow: 0 5px 0 #4A0D16;
+  transition: all 0.12s ease;
+}
+.btn-3d:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #4A0D16;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 5px 0 #4A0D16, 0 0 0 0 rgba(123, 27, 41, 0.4); }
+  50% { box-shadow: 0 5px 0 #4A0D16, 0 0 0 8px rgba(123, 27, 41, 0); }
+}
+.btn-pulse {
+  animation: pulseGlow 2.2s infinite;
+}
+
+/* Ticket Cutout Styling */
+.ticket-card {
+  position: relative;
+  border: 2.5px dashed #7B1B29;
+}
+.ticket-notch-left, .ticket-notch-right {
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  background-color: #FDF8F2;
+  border-radius: 9999px;
+  transform: translateY(-50%);
+}
+.ticket-notch-left {
+  left: -13px;
+  border-right: 2.5px solid #7B1B29;
+}
+.ticket-notch-right {
+  right: -13px;
+  border-left: 2.5px solid #7B1B29;
+}

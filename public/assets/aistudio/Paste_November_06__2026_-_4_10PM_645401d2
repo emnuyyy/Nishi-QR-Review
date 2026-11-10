@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3 Kata Untuk Nishi? - Rahasia Spesial</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka (Rounded/Cute) & Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            nishi: {
+              maroon: '#7B1B29',
+              dark: '#58101B',
+              light: '#9E2A3B',
+              cream: '#FDF8F2',
+              card: '#F5ECE0',
+              gold: '#F59E0B'
+            }
+          },
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #EFE6DD;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #7B1B29;
+      overflow-x: hidden;
+    }
+
+    /* Subtle Japanese Seigaiha / Dot pattern inspired background */
+    .bg-kawaii-pattern {
+      background-color: #FDF8F2;
+      background-image: radial-gradient(#7B1B29 0.75px, transparent 0.75px), radial-gradient(#7B1B29 0.75px, #FDF8F2 0.75px);
+      background-size: 28px 28px;
+      background-position: 0 0, 14px 14px;
+      background-attachment: local;
+    }
+
+    .pattern-overlay {
+      background: linear-gradient(180deg, rgba(253,248,242,0.88) 0%, rgba(253,248,242,0.96) 40%, rgba(253,248,242,0.98) 100%);
+    }
+
+    /* Custom Animations */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(1deg); }
+    }
+    .animate-float {
+      animation: floatSlow 3.2s ease-in-out infinite;
+    }
+
+    @keyframes popBounce {
+      0% { transform: scale(0.8); opacity: 0; }
+      70% { transform: scale(1.04); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-pop {
+      animation: popBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .animate-shake {
+      animation: shake 0.35s ease-in-out;
+    }
+
+    /* Ticket Cutout Styling */
+    .ticket-card {
+      position: relative;
+      border: 2.5px dashed #7B1B29;
+    }
+    .ticket-notch-left, .ticket-notch-right {
+      position: absolute;
+      top: 50%;
+      width: 24px;
+      height: 24px;
+      background-color: #FDF8F2;
+      border-radius: 9999px;
+      transform: translateY(-50%);
+    }
+    .ticket-notch-left {
+      left: -14px;
+      border-right: 2.5px solid #7B1B29;
+    }
+    .ticket-notch-right {
+      right: -14px;
+      border-left: 2.5px solid #7B1B29;
+    }
+
+    /* Comic 3D button press effect */
+    .btn-3d {
+      box-shadow: 0 5px 0 #4A0D16;
+      transition: all 0.12s ease;
+    }
+    .btn-3d:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #4A0D16;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 5px 0 #4A0D16, 0 0 0 0 rgba(123, 27, 41, 0.45); }
+      50% { box-shadow: 0 5px 0 #4A0D16, 0 0 0 8px rgba(123, 27, 41, 0); }
+    }
+    .btn-pulse {
+      animation: pulseGlow 2s infinite;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 50;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center py-0 sm:py-6 px-0 sm:px-4">
+
+  <!-- Confetti Canvas for Unlock Celebration -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-3">
+    <div class="bg-nishi-maroon text-nishi-cream px-4 py-2.5 rounded-full shadow-lg border-2 border-nishi-cream flex items-center gap-2 text-xs font-bold whitespace-nowrap">
+      <span>🐾</span>
+      <span id="toast-message">Teks berhasil disalin!</span>
+    </div>
+  </div>
+
+  <!-- Main Mobile Container (Max 420px) -->
+  <main class="w-full max-w-[420px] min-h-screen sm:min-h-[780px] bg-kawaii-pattern sm:rounded-[34px] shadow-2xl border-0 sm:border-[3px] border-nishi-maroon relative overflow-hidden flex flex-col justify-between">
+    <div class="pattern-overlay flex-1 flex flex-col justify-between p-5 sm:p-6">
+
+      <!-- Top Brand Bar -->
+      <header class="flex items-center justify-between border-b-2 border-nishi-maroon/15 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-nishi-maroon text-nishi-cream flex items-center justify-center font-display font-bold text-sm shadow-sm">
+            西
+          </div>
+          <div>
+            <span class="font-display font-bold text-base tracking-tight text-nishi-maroon block leading-none">NISHI</span>
+            <span class="text-[11px] font-medium text-nishi-maroon/70">Secret QR Club 🐾</span>
+          </div>
+        </div>
+        <span class="text-xs font-bold bg-nishi-maroon/10 text-nishi-maroon px-2.5 py-1 rounded-full border border-nishi-maroon/20">
+          Special Treat 🍨
+        </span>
+      </header>
+
+      <!-- ========================================== -->
+      <!-- STEP 1: LOCKED SECRET STATE                -->
+      <!-- ========================================== -->
+      <section id="step-locked" class="my-auto py-3 flex flex-col items-center text-center">
+        
+        <!-- Mascot & Speech Bubble matching the Standee -->
+        <div class="relative w-full flex flex-col items-center mt-1 mb-2">
+          <!-- Hand-drawn style Speech Bubble -->
+          <div class="relative bg-white border-[3px] border-nishi-maroon rounded-[28px] px-5 py-2.5 shadow-md mb-2 animate-float z-10">
+            <p class="font-display font-bold text-lg text-nishi-maroon leading-tight">
+              3 kata untuk <span class="underline decoration-wavy decoration-nishi-light">Nishi?</span>
+            </p>
+            <!-- Speech bubble tail -->
+            <div class="w-4 h-4 bg-white border-r-[3px] border-b-[3px] border-nishi-maroon transform rotate-45 absolute -bottom-2.5 left-1/2 -translate-x-1/2"></div>
+          </div>
+
+          <!-- Cute SVG Cat with Cool Sunglasses (Matching Page 1 Left Cat) -->
+          <div class="w-40 h-36 relative flex items-center justify-center">
+            <svg viewBox="0 0 220 190" class="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Exclamation marks left -->
+              <path d="M26 52L18 35L28 31L33 49Z" stroke="#7B1B29" stroke-width="3.5" stroke-linejoin="round" fill="#FDF8F2"/>
+              <path d="M42 42L40 23L50 22L49 40Z" stroke="#7B1B29" stroke-width="3.5" stroke-linejoin="round" fill="#FDF8F2"/>
+              
+              <!-- Cat Tail swaying -->
+              <path d="M45 162C22 158 18 130 32 118C43 108 52 124 44 136" stroke="#7B1B29" stroke-width="5" stroke-linecap="round"/>
+
+              <!-- Cat Head & Ears -->
+              <path d="M55 82L48 34L90 56C104 52 120 52 134 56L176 34L169 82C182 98 184 126 172 146C158 168 66 168 52 146C40 126 42 98 55 82Z" fill="#FDF8F2" stroke="#7B1B29" stroke-width="5" stroke-linejoin="round"/>
+              <!-- Inner Ears -->
+              <path d="M56 72L53 45L79 59" fill="#7B1B29" fill-opacity="0.18" stroke="#7B1B29" stroke-width="3.5" stroke-linejoin="round"/>
+              <path d="M168 72L171 45L145 59" fill="#7B1B29" fill-opacity="0.18" stroke="#7B1B29" stroke-width="3.5" stroke-linejoin="round"/>
+
+              <!-- Cool Round Sunglasses -->
+              <g transform="rotate(-5 112 95)">
+                <circle cx="86" cy="95" r="20" fill="#7B1B29" stroke="#7B1B29" stroke-width="4"/>
+                <circle cx="138" cy="95" r="20" fill="#7B1B29" stroke="#7B1B29" stroke-width="4"/>
+                <!-- Glasses shine -->
+                <path d="M77 84L83 105" stroke="#FDF8F2" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M85 83L89 96" stroke="#FDF8F2" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M129 84L135 105" stroke="#FDF8F2" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M137 83L141 96" stroke="#FDF8F2" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Bridge -->
+                <path d="M106 94H118" stroke="#7B1B29" stroke-width="4.5" stroke-linecap="round"/>
+              </g>
+
+              <!-- Cute Nose & Cheeky Tongue Mouth -->
+              <ellipse cx="112" cy="113" rx="5" ry="3.5" fill="#7B1B29"/>
+              <path d="M98 122C103 128 111 126 112 117C113 126 121 128 126 122" stroke="#7B1B29" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Tongue sticking out -->
+              <path d="M108 125C108 139 123 139 122 124" fill="#F4A2AD" stroke="#7B1B29" stroke-width="3.8"/>
+
+              <!-- Blush Marks -->
+              <path d="M64 114L68 119M71 112L75 117" stroke="#7B1B29" stroke-width="3" stroke-linecap="round"/>
+              <path d="M150 112L154 117M157 114L161 119" stroke="#7B1B29" stroke-width="3" stroke-linecap="round"/>
+
+              <!-- Whiskers -->
+              <path d="M46 104L30 100M45 114L28 114" stroke="#7B1B29" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M178 104L194 100M179 114L196 114" stroke="#7B1B29" stroke-width="3.5" stroke-linecap="round"/>
+
+              <!-- Paws holding secret box -->
+              <rect x="64" y="148" width="96" height="34" rx="10" fill="#7B1B29"/>
+              <text x="112" y="170" text-anchor="middle" fill="#FDF8F2" font-family="Fredoka" font-weight="700" font-size="14">🔒 SECRET GIFT</text>
+              <ellipse cx="72" cy="148" rx="12" ry="9" fill="#FDF8F2" stroke="#7B1B29" stroke-width="4"/>
+              <ellipse cx="152" cy="148" rx="12" ry="9" fill="#FDF8F2" stroke="#7B1B29" stroke-width="4"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Headline & Subtext -->
+        <div class="space-y-1.5 mb-4 px-1">
+          <div class="inline-block bg-nishi-maroon text-nishi-cream text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full mb-1">
+            Kasih 3 kata, nanti aku kasih tahu rahasianya!
+          </div>
+          <h1 class="font-display font-bold text-2xl text-nishi-maroon leading-snug">
+            Psst... Kamu berhasil nemuin QR Rahasia Nishi! 🐾
+          </h1>
+          <p class="text-xs sm:text-sm text-nishi-maroon/80 leading-relaxed">
+            Sesuai janji, kasih <strong>3 kata dulu buat Nishi</strong> di bawah ini, nanti langsung aku bocorin rahasia + <strong>hadiah menu gratisnya!</strong>
+          </p>
+        </div>
+
+        <!-- Quick-Pick 3 Words Pills -->
+        <div class="w-full mb-3">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-nishi-maroon/70 mb-2 text-left flex items-center justify-between">
+            <span>✨ Pilih Cepat atau Ketik Sendiri:</span>
+            <span id="word-counter" class="text-nishi-maroon font-extrabold">0/3 Kata</span>
+          </p>
+          <div class="flex flex-wrap gap-1.5 justify-center">
+            <button type="button" onclick="fillPreset('Enak, Nyaman, Nagih!')" class="preset-pill text-xs font-semibold bg-white hover:bg-nishi-maroon hover:text-white text-nishi-maroon border-2 border-nishi-maroon/30 rounded-full px-3 py-1.5 transition-all active:scale-95">
+              🍱 Enak, Nyaman, Nagih!
+            </button>
+            <button type="button" onclick="fillPreset('Vibes Jepang Banget!')" class="preset-pill text-xs font-semibold bg-white hover:bg-nishi-maroon hover:text-white text-nishi-maroon border-2 border-nishi-maroon/30 rounded-full px-3 py-1.5 transition-all active:scale-95">
+              🏮 Vibes Jepang Banget!
+            </button>
+            <button type="button" onclick="fillPreset('Seru, Lezat, Juara!')" class="preset-pill text-xs font-semibold bg-white hover:bg-nishi-maroon hover:text-white text-nishi-maroon border-2 border-nishi-maroon/30 rounded-full px-3 py-1.5 transition-all active:scale-95">
+              ✨ Seru, Lezat, Juara!
+            </button>
+            <button type="button" onclick="fillPreset('Tempat Nongkrong Asik!')" class="preset-pill text-xs font-semibold bg-white hover:bg-nishi-maroon hover:text-white text-nishi-maroon border-2 border-nishi-maroon/30 rounded-full px-3 py-1.5 transition-all active:scale-95">
+              🐾 Tempat Nongkrong Asik!
+            </button>
+          </div>
+        </div>
+
+        <!-- Text Input Box -->
+        <div id="input-container" class="w-full relative mb-4">
+          <input 
+            id="three-words-input" 
+            type="text" 
+            placeholder="Ketik 3 kata (contoh: Enak, Nyaman, Nagih)" 
+            maxlength="60"
+            oninput="handleInput(this.value)"
+            class="w-full bg-white border-[2.5px] border-nishi-maroon rounded-2xl px-4 py-3.5 text-sm font-bold text-nishi-maroon placeholder-nishi-maroon/40 focus:outline-none focus:ring-4 focus:ring-nishi-maroon/15 shadow-inner text-center"
+          />
+          <p id="error-msg" class="text-[11px] font-bold text-red-600 mt-1.5 hidden">
+            😿 Eits, isi minimal 3 kata dulu ya biar kucingnya senang!
+          </p>
+        </div>
+
+        <!-- Unlock CTA Button -->
+        <button 
+          type="button"
+          onclick="unlockSecret()"
+          class="w-full bg-nishi-maroon hover:bg-nishi-dark text-nishi-cream font-display font-bold text-base py-3.5 px-6 rounded-2xl btn-3d flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>Buka Rahasianya Sekarang!</span>
+          <span class="text-lg">🔓</span>
+        </button>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- STEP 2: UNLOCKED SECRET & REWARD STATE     -->
+      <!-- ========================================== -->
+      <section id="step-unlocked" class="my-auto py-2 hidden flex-col items-center text-center">
+        
+        <!-- Unlocked Top Badge -->
+        <div class="inline-flex items-center gap-1.5 bg-amber-400 text-nishi-maroon border-2 border-nishi-maroon font-display font-bold text-xs px-3.5 py-1 rounded-full shadow-sm mb-2">
+          <span>🎉</span>
+          <span>RAHASIA NISHI TERBUKA!</span>
+          <span>🎉</span>
+        </div>
+
+        <!-- Super Excited Cat + Cute Gelato Cup SVG -->
+        <div class="w-40 h-28 relative flex items-center justify-center mb-1">
+          <svg viewBox="0 0 250 175" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Sparkles around cat -->
+            <path d="M26 42L30 52L40 56L30 60L26 70L22 60L12 56L22 52L26 42Z" fill="#F59E0B" stroke="#7B1B29" stroke-width="2.5"/>
+            <path d="M218 32L221 40L229 43L221 46L218 54L215 46L207 43L215 40L218 32Z" fill="#F59E0B" stroke="#7B1B29" stroke-width="2.5"/>
+
+            <!-- Happy Cat Head & Ears -->
+            <path d="M45 78L38 30L80 52C94 48 110 48 124 52L166 30L159 78C172 94 174 122 162 142C148 164 56 164 42 142C30 122 32 94 45 78Z" fill="#FDF8F2" stroke="#7B1B29" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M46 68L43 41L69 55" fill="#7B1B29" fill-opacity="0.18" stroke="#7B1B29" stroke-width="3.5" stroke-linejoin="round"/>
+            <path d="M158 68L161 41L135 55" fill="#7B1B29" fill-opacity="0.18" stroke="#7B1B29" stroke-width="3.5" stroke-linejoin="round"/>
+
+            <!-- Laughing / Excited Eyes (> <) -->
+            <path d="M64 84L82 93L64 102" stroke="#7B1B29" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M140 84L122 93L140 102" stroke="#7B1B29" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Big Happy Grin -->
+            <ellipse cx="102" cy="102" rx="5" ry="3.5" fill="#7B1B29"/>
+            <path d="M74 114C74 114 88 120 102 120C116 120 130 114 130 114C130 134 118 144 102 144C86 144 74 134 74 114Z" fill="#F4A2AD" stroke="#7B1B29" stroke-width="4.5" stroke-linejoin="round"/>
+            <path d="M78 122H126" stroke="#7B1B29" stroke-width="3.5"/>
+
+            <!-- Blush -->
+            <ellipse cx="58" cy="109" rx="7" ry="4" fill="#F4A2AD"/>
+            <ellipse cx="146" cy="109" rx="7" ry="4" fill="#F4A2AD"/>
+
+            <!-- Whiskers -->
+            <path d="M36 100L18 95M35 110L16 112" stroke="#7B1B29" stroke-width="3.5" stroke-linecap="round"/>
+
+            <!-- Cute Gelato Scoop in Cup (Right Side) -->
+            <g transform="translate(158, 66)">
+              <!-- Wafer Spoon -->
+              <path d="M48 8L62 -8L70 -2L55 15" fill="#F59E0B" stroke="#7B1B29" stroke-width="3.5" stroke-linejoin="round"/>
+              <!-- Gelato Scoop -->
+              <path d="M14 42C14 22 26 12 40 12C54 12 66 22 66 42" fill="#F4A2AD" stroke="#7B1B29" stroke-width="4" stroke-linecap="round"/>
+              <!-- Scalloped Gelato Base -->
+              <path d="M10 42C10 37 16 37 20 42C24 37 32 37 36 42C40 37 48 37 52 42C56 37 64 37 68 42C70 46 66 51 60 51H18C12 51 8 46 10 42Z" fill="#F4A2AD" stroke="#7B1B29" stroke-width="4" stroke-linejoin="round"/>
+              <!-- Cherry on Top -->
+              <circle cx="40" cy="8" r="7" fill="#7B1B29" stroke="#FDF8F2" stroke-width="1.5"/>
+              <path d="M42 2C46 -6 54 -8 58 -5" stroke="#7B1B29" stroke-width="3" stroke-linecap="round"/>
+              <!-- Gelato Cup -->
+              <path d="M16 51H64L56 84C55 88 51 90 46 90H34C29 90 25 88 24 84L16 51Z" fill="#FDF8F2" stroke="#7B1B29" stroke-width="4" stroke-linejoin="round"/>
+              <path d="M28 51V88M40 51V90M52 51V88" stroke="#7B1B29" stroke-width="3"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Voucher / Ticket Reveal Card -->
+        <div class="w-full bg-nishi-card ticket-card rounded-2xl p-4 mb-3.5 shadow-md relative overflow-hidden">
+          <div class="ticket-notch-left"></div>
+          <div class="ticket-notch-right"></div>
+
+          <p class="text-[11px] font-extrabold uppercase tracking-widest text-nishi-maroon/70">
+            🍨 SECRET REWARD VOUCHER
+          </p>
+          <h2 class="font-display font-bold text-xl sm:text-2xl text-nishi-maroon mt-0.5 leading-tight">
+            Selamat! Kamu Dapat <br/>
+            <span id="reward-title" class="text-white bg-nishi-maroon px-3 py-1 rounded-xl inline-block mt-1.5 shadow-sm tracking-wide">
+              🍨 FREE 1 SCOOP GELATO
+            </span>
+          </h2>
+          <p class="text-xs font-medium text-nishi-maroon/80 mt-2">
+            Spesial dari Nishi karena kamu udah kasih 3 kata terbaikmu hari ini!
+          </p>
+        </div>
+
+        <!-- Auto-Copied 3 Words Box -->
+        <div class="w-full bg-white border-2 border-nishi-maroon rounded-2xl p-3 mb-3.5 shadow-sm">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-bold text-nishi-maroon/70 flex items-center gap-1">
+              💬 3 Kata Kamu untuk Nishi:
+            </span>
+            <span id="copied-badge" class="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full">
+              📋 Otomatis Disalin!
+            </span>
+          </div>
+          <div class="bg-nishi-cream border border-nishi-maroon/20 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
+            <p id="display-three-words" class="font-display font-bold text-sm text-nishi-maroon truncate">
+              "Enak, Nyaman, Nagih!"
+            </p>
+            <button 
+              type="button" 
+              onclick="copyUserWords()" 
+              class="text-[11px] font-bold bg-nishi-maroon text-nishi-cream px-2.5 py-1 rounded-lg hover:bg-nishi-dark shrink-0 active:scale-95 transition"
+            >
+              Salin Ulang
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 Easy Steps to Claim -->
+        <div class="w-full text-left bg-white/90 border-2 border-nishi-maroon/20 rounded-2xl p-3.5 mb-4 space-y-2.5">
+          <p class="text-xs font-extrabold uppercase tracking-wider text-nishi-maroon flex items-center gap-1.5">
+            <span>🐾</span> Cara Klaim Hadiahmu (Cuma 30 Detik!):
+          </p>
+
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-nishi-maroon text-nishi-cream font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">1</span>
+            <p class="text-xs text-nishi-maroon leading-snug">
+              Klik tombol <strong>Tulis Google Review</strong> di bawah (3 kata tadi sudah otomatis ter-<em>copy</em>, tinggal <em>paste</em>!).
+            </p>
+          </div>
+
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-nishi-maroon text-nishi-cream font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">2</span>
+            <p class="text-xs text-nishi-maroon leading-snug">
+              Beri <strong>Bintang 5 ⭐</strong> & <strong>Posting</strong> review kamu di Google.
+            </p>
+          </div>
+
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-nishi-maroon text-nishi-cream font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">3</span>
+            <p class="text-xs text-nishi-maroon leading-snug">
+              <strong>Tunjukkan bukti review</strong> yang sudah ter-posting ke staf Nishi untuk klaim <strong>1 Scoop Gelato Gratis! 🍨</strong>
+            </p>
+          </div>
+        </div>
+
+        <!-- Primary CTA: Open Google Maps Review -->
+        <a 
+          id="google-review-link"
+          href="https://search.google.com/local/writereview?placeid=ChIJLcr02jHzaS4RDwi1-NrCa4w&source=g.page.m._&utm_source=gbp&laa=merchant-review-solicitation" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          onclick="copyUserWords(true)"
+          class="w-full bg-nishi-maroon hover:bg-nishi-dark text-nishi-cream font-display font-bold text-base py-3.5 px-5 rounded-2xl btn-3d btn-pulse flex items-center justify-center gap-2 mb-2.5"
+        >
+          <span>Tulis Google Review Sekarang</span>
+          <span>⭐</span>
+        </a>
+
+        <!-- Secondary Actions Row -->
+        <div class="flex items-center justify-center gap-4 mt-0.5">
+          <button 
+            type="button" 
+            onclick="copyUserWords(false)" 
+            class="text-xs font-bold text-nishi-maroon hover:text-nishi-dark underline py-1 cursor-pointer"
+          >
+            📋 Salin Ulang 3 Kata
+          </button>
+          <span class="text-nishi-maroon/30">•</span>
+          <button 
+            type="button" 
+            onclick="resetFlow()" 
+            class="text-xs font-bold text-nishi-maroon/70 hover:text-nishi-maroon underline py-1 cursor-pointer"
+          >
+            ← Ganti 3 Kata
+          </button>
+        </div>
+
+      </section>
+
+      <!-- Clean Production Footer -->
+      <footer class="pt-3 border-t border-nishi-maroon/15 text-center">
+        <p class="text-[11px] text-nishi-maroon/65 font-semibold">
+          🐾 Nishi • Syarat & ketentuan berlaku (1x klaim Free Gelato / review)
+        </p>
+      </footer>
+
+    </div>
+  </main>
+
+  <script>
+    // State Variables
+    let currentThreeWords = '';
+    const inputEl = document.getElementById('three-words-input');
+    const counterEl = document.getElementById('word-counter');
+    const errorEl = document.getElementById('error-msg');
+    const inputContainer = document.getElementById('input-container');
+    const stepLocked = document.getElementById('step-locked');
+    const stepUnlocked = document.getElementById('step-unlocked');
+    const displayWordsEl = document.getElementById('display-three-words');
+
+    // Count words and update badge
+    function countWords(str) {
+      const cleaned = str.trim().replace(/,/g, ' ');
+      if (!cleaned) return 0;
+      return cleaned.split(/\s+/).filter(Boolean).length;
+    }
+
+    function handleInput(val) {
+      errorEl.classList.add('hidden');
+      const count = countWords(val);
+      counterEl.textContent = `${Math.min(count, 3)}/3 Kata`;
+      if (count >= 3) {
+        counterEl.classList.add('text-emerald-700');
+      } else {
+        counterEl.classList.remove('text-emerald-700');
+      }
+    }
+
+    // Fill input when user taps a quick preset pill
+    function fillPreset(text) {
+      inputEl.value = text;
+      handleInput(text);
+      inputEl.focus();
+    }
+
+    // Copy text helper compatible with iFrame & mobile browsers
+    function copyToClipboard(text) {
+      try {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = text;
+        tempInput.style.position = 'fixed';
+        tempInput.style.opacity = '0';
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Toast notification trigger
+    let toastTimeout;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.textContent = message;
+      toast.classList.remove('opacity-0', '-translate-y-3');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-3');
+      }, 2600);
+    }
+
+    // Step 1 -> Step 2 Unlock Handler
+    function unlockSecret() {
+      const rawText = inputEl.value.trim();
+      const wordCount = countWords(rawText);
+
+      // Require at least 2-3 words or non-empty input
+      if (!rawText || wordCount < 2) {
+        errorEl.classList.remove('hidden');
+        inputContainer.classList.remove('animate-shake');
+        void inputContainer.offsetWidth; // trigger reflow
+        inputContainer.classList.add('animate-shake');
+        inputEl.focus();
+        return;
+      }
+
+      currentThreeWords = rawText;
+      displayWordsEl.textContent = `"${currentThreeWords}"`;
+
+      // Auto-copy formatted review starter to clipboard
+      const reviewStarter = `${currentThreeWords} — `;
+      copyToClipboard(reviewStarter);
+
+      // Switch View to Unlocked State
+      stepLocked.classList.add('hidden');
+      stepUnlocked.classList.remove('hidden');
+      stepUnlocked.classList.add('flex', 'animate-pop');
+
+      // Launch Confetti & Show Toast
+      fireConfetti();
+      showToast('Rahasia terbuka & 3 katamu otomatis disalin!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Re-copy user's 3 words
+    function copyUserWords(silentRedirect = false) {
+      if (!currentThreeWords) return;
+      copyToClipboard(currentThreeWords);
+      if (silentRedirect) {
+        showToast('3 kata disalin! Tinggal tempel (paste) di Google Review ⭐');
+      } else {
+        showToast('Teks 3 kata berhasil disalin ulang! 📋');
+      }
+    }
+
+    // Reset back to Step 1
+    function resetFlow() {
+      stepUnlocked.classList.add('hidden');
+      stepUnlocked.classList.remove('flex', 'animate-pop');
+      stepLocked.classList.remove('hidden');
+      inputEl.value = '';
+      handleInput('');
+    }
+
+    // Lightweight Canvas Confetti in Nishi Maroon & Gold colors
+    function fireConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#7B1B29', '#F59E0B', '#F4A2AD', '#10B981', '#9E2A3B'];
+
+      for (let i = 0; i < 65; i++) {
+        pieces.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 140,
+          y: canvas.height / 2 - 60,
+          vx: (Math.random() - 0.5) * 12,
+          vy: Math.random() * -12 - 4,
+          size: Math.random() * 8 + 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vr: (Math.random() - 0.5) * 12,
+          gravity: 0.35
+        });
+      }
+
+      let frame = 0;
+      function updateConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.rotation += p.vr;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+          ctx.restore();
+        });
+
+        frame++;
+        if (frame < 95) {
+          requestAnimationFrame(updateConfetti);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      requestAnimationFrame(updateConfetti);
+    }
+  </script>
+</body>
+</html>
